@@ -12,8 +12,9 @@ describe('decorator debug', () => {
     }
 
     const s = spy(console, 'log')
+    const instance = new Demo()
 
-    new Demo().method('test')
+    instance.method('test')
 
     const arg = s.getCall(0).args[0]
 
@@ -23,6 +24,7 @@ describe('decorator debug', () => {
     expect(arg.args).to.deep.equal(['test'])
     expect(arg.result).to.equal(true)
     expect(arg.time).to.be.a('number')
+    expect(arg.context).to.equal(instance)
   })
 
   it('should debug constructors', () => {
@@ -44,6 +46,7 @@ describe('decorator debug', () => {
     expect(arg.args).to.deep.equal([1, 2, 3])
     expect(arg.result.method).to.be.a('function')
     expect(arg.time).to.be.a('number')
+    expect(arg.context).to.equal(arg.result)
   })
 
   describe('conditional', () => {

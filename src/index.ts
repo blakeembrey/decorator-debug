@@ -5,6 +5,7 @@ interface Debug {
   result: any
   args: any[]
   time: number
+  context: any
 }
 
 function debug (value: boolean): typeof debug
@@ -35,7 +36,8 @@ function wrap <T extends Function> (fn: T, name?: string): T {
     const result = isNew ? new (<any> fn)(...args) : fn.apply(this, args)
     const end = now()
     const time = end - start
-    const output: Debug = { name, result, args, time }
+    const context = isNew ? result : this
+    const output: Debug = { name, result, args, time, context }
 
     console.log(output)
 
