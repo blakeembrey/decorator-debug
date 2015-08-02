@@ -30,7 +30,7 @@ function debug (value: any, name?: string, descriptor?: PropertyDescriptor) {
 function wrap <T extends Function> (fn: T, name?: string): T {
   name = name || (<any> fn).name
 
-  return <T> <any> function debug (...args: any[]) {
+  function debug (...args: any[]) {
     const isNew = this instanceof debug
     const start = now()
     const result = isNew ? new (<any> fn)(...args) : fn.apply(this, args)
@@ -43,6 +43,11 @@ function wrap <T extends Function> (fn: T, name?: string): T {
 
     return result
   }
+
+  // Set the `displayName` for better debugging.
+  (<any> debug).displayName = name
+
+  return <T> <any> debug
 }
 
 export = debug
