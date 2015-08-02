@@ -16,9 +16,14 @@ describe('decorator debug', () => {
 
     instance.method('test')
 
-    const arg = s.getCall(0).args[0]
+    const name = s.getCall(0).args[0]
+    const arg = s.getCall(0).args[1]
 
     s.restore()
+
+    expect(s.callCount).to.equal(1)
+
+    expect(name).to.equal('Demo#method')
 
     expect(arg.name).to.deep.equal('method')
     expect(arg.args).to.deep.equal(['test'])
@@ -35,12 +40,15 @@ describe('decorator debug', () => {
     }
 
     const s = spy(console, 'log')
-
-    new Demo(1, 2, 3)
-
-    const arg = s.getCall(0).args[0]
+    const result = new Demo(1, 2, 3)
+    const name = s.getCall(0).args[0]
+    const arg = s.getCall(0).args[1]
 
     s.restore()
+
+    expect(s.callCount).to.equal(1)
+
+    expect(name).to.equal('new Demo')
 
     expect(arg.name).to.deep.equal('Demo')
     expect(arg.args).to.deep.equal([1, 2, 3])

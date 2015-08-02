@@ -14,7 +14,7 @@ function debug (value: Object, name: string, descriptor: PropertyDescriptor): vo
 function debug (value: any, name?: string, descriptor?: PropertyDescriptor) {
   // Class properties.
   if (arguments.length === 3) {
-    descriptor.value = wrap(descriptor.value, name)
+    descriptor.value = wrap(descriptor.value, name, value)
     return
   }
 
@@ -27,8 +27,9 @@ function debug (value: any, name?: string, descriptor?: PropertyDescriptor) {
   return value ? debug : undefined
 }
 
-function wrap <T extends Function> (fn: T, name?: string): T {
-  name = name || (<any> fn).name
+function wrap <T extends Function> (fn: T, property?: string, context?: any): T {
+  const name = property || (<any> fn).name
+  const method = context ? `${context.constructor.name}#${name}` : name
 
   function debug (...args: any[]) {
     const isNew = this instanceof debug
@@ -39,7 +40,7 @@ function wrap <T extends Function> (fn: T, name?: string): T {
     const context = isNew ? result : this
     const output: Debug = { name, result, args, time, context }
 
-    console.log(output)
+    console.log((isNew ? 'new ' : '') + method, output)
 
     return result
   }
