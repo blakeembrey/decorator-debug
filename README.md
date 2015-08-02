@@ -15,7 +15,7 @@ npm install decorator-debug --save
 
 ## Usage
 
-Every time the class or method is called, a console log will be emitted with the property `name`, `result`, `args` and `time` taken.
+Every time the class or method is called, a console log will be emitted with the property `name`, `result`, `args`, `context` and `time` taken.
 
 ```js
 import debug = require('decorator-debug')
@@ -30,8 +30,8 @@ class Demo {
 
 new Demo(1, 2, 3).method('test')
 
-//=> { name: 'Demo', result: {}, args: [ 1, 2, 3 ], time: 0.2647359999999992 }
-//=> { name: 'method', result: true, args: [ 'test' ], time: 0.029204000000000008 }
+//=> new Demo { name: 'Demo', result: {}, context: {}, args: [ 1, 2, 3 ], time: 0.2647359999999992 }
+//=> Demo#method { name: 'method', result: true, context: {}, args: [ 'test' ], time: 0.029204000000000008 }
 ```
 
 **P.S.** You can debug conditionally.
