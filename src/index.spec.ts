@@ -90,4 +90,13 @@ describe('decorator debug', () => {
       expect(s.callCount).to.equal(0)
     })
   })
+
+  it('should keep function properties', () => {
+    @debug
+    class Demo {
+      static foo = 'bar'
+    }
+
+    expect(Demo.foo).to.equal('bar')
+  })
 })

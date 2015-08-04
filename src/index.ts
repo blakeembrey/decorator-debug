@@ -48,6 +48,11 @@ function wrap <T extends Function> (fn: T, property?: string, context?: any): T 
   // Set the `displayName` for better debugging.
   (<any> debug).displayName = name
 
+  // Copy all properties from function.
+  for (let property in fn) {
+    (<any> debug)[property] = (<any> fn)[property]
+  }
+
   return <T> <any> debug
 }
 
