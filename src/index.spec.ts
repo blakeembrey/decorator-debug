@@ -99,4 +99,44 @@ describe('decorator debug', () => {
 
     expect(Demo.foo).to.equal('bar')
   })
+
+  it('should work with setters/getters', () => {
+    class Demo {
+      @debug
+      get prop () { return true}
+      set prop (x: boolean) {}
+    }
+
+    const s = spy(console, 'log')
+    const instance = new Demo()
+
+    instance.prop = false
+    instance.prop
+
+    s.restore()
+
+    expect(s.callCount).to.equal(2)
+
+    const name1 = s.getCall(0).args[0]
+    const arg1 = s.getCall(0).args[1]
+
+    const name2 = s.getCall(1).args[0]
+    const arg2 = s.getCall(1).args[1]
+
+    expect(name1).to.equal('set Demo#prop')
+
+    expect(arg1.name).to.deep.equal('prop')
+    expect(arg1.args).to.deep.equal([false])
+    expect(arg1.result).to.be.undefined
+    expect(arg1.time).to.be.a('number')
+    expect(arg1.context).to.equal(instance)
+
+    expect(name2).to.equal('get Demo#prop')
+
+    expect(arg2.name).to.deep.equal('prop')
+    expect(arg2.args).to.deep.equal([])
+    expect(arg2.result).to.be.true
+    expect(arg2.time).to.be.a('number')
+    expect(arg2.context).to.equal(instance)
+  })
 })
