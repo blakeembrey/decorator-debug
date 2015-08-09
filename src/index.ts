@@ -44,11 +44,12 @@ function wrap <T extends Function> (fn: T, property?: string, target?: any, type
 
   function debug (...args: any[]) {
     const isNew = this instanceof debug
+    const context = isNew ? Object.create(fn.prototype) : this
     const start = now()
-    const result = isNew ? new (<any> fn)(...args) : fn.apply(this, args)
+    const out = fn.apply(context, args)
     const end = now()
+    const result = isNew ? (out === Object(out) ? out : context) : out
     const time = end - start
-    const context = isNew ? result : this
     const output: Debug = { name, result, args, time, context }
 
     console.log(`${isNew ? 'new ' : ''}${signature}`, output)
@@ -57,11 +58,12 @@ function wrap <T extends Function> (fn: T, property?: string, target?: any, type
   }
 
   // Set the `displayName` for better debugging.
-  (<any> debug).displayName = name
+  ;(<any> debug).displayName = name
+  ;(<any> debug).prototype = fn.prototype
 
   // Copy all properties from function.
   for (let property in fn) {
-    (<any> debug)[property] = (<any> fn)[property]
+    ;(<any> debug)[property] = (<any> fn)[property]
   }
 
   return <T> <any> debug

@@ -57,6 +57,32 @@ describe('decorator debug', () => {
     expect(arg.context).to.equal(arg.result)
   })
 
+  it('should debug the result when returning non-primitive', () => {
+    @debug
+    class Demo {
+      constructor () {
+        return {}
+      }
+    }
+
+    const s = spy(console, 'log')
+    const result = new Demo()
+    const name = s.getCall(0).args[0]
+    const arg = s.getCall(0).args[1]
+
+    s.restore()
+
+    expect(s.callCount).to.equal(1)
+
+    expect(name).to.equal('new Demo')
+
+    expect(arg.name).to.deep.equal('Demo')
+    expect(arg.args).to.deep.equal([])
+    expect(arg.result).to.be.an('object').and.not.equal(arg.context)
+    expect(arg.time).to.be.a('number')
+    expect(Object.getPrototypeOf(arg.context)).to.equal(Demo.prototype)
+  })
+
   describe('conditional', () => {
     it('should enable debug', () => {
       class Demo {
